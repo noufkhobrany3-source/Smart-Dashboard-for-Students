@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المؤشرات الذكية للطلاب والطالبات – التوجيه الطلابي</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (XLSX) CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#F5F3FF',
+                            100: '#EDE9FE',
+                            500: '#7C3AED',
+                            600: '#6D28D9',
+                            700: '#5B21B6',
+                            800: '#4C1D95',
+                            900: '#3B2F63'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; background-color: #F8F7FC; color: #1E293B; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-primary-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary-700 p-2.5 rounded-xl shadow-inner">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">لوحة المؤشرات الذكية للطلاب والطالبات</h1>
+                    <p class="text-xs text-primary-200">التوجيه الطلابي – نظام التحليل والمتابعة والإرشاد</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="downloadSmartTemplate()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow">
+                    <span>📥 تنزيل قالب Excel الذكي (320 طالبة)</span>
+                </button>
+                <button onclick="switchTab('import')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">استيراد البيانات</button>
+                <button onclick="switchTab('dashboard')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">لوحة المؤشرات</button>
+                <button onclick="switchTab('students')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">سجل الطلاب</button>
+                <button onclick="switchTab('guidance')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">المساعد الإرشادي</button>
+                <button onclick="switchTab('reports')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">التقارير</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content active space-y-6">
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">الملخص الإحصائي العام</h2>
+                    <p class="text-xs text-slate-500" id="db-subtitle">إجمالي الطلاب المسجلين: 0 | آخر تحديث: لم يتم الرفع بعد</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadDemoData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold">تحميل بيانات تجريبية</button>
+                    <button onclick="resetAllData()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-bold">مسح البيانات</button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold">إجمالي الطلاب والطالبات</p>
+                        <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total">0</h3>
+                    </div>
+                    <div class="bg-primary-50 text-primary-600 p-3 rounded-xl"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-emerald-600 font-bold">🟢 حالات طبيعية (مستقرة)</p>
+                        <h3 class="text-2xl font-black text-emerald-700 mt-1" id="kpi-green">0</h3>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-amber-600 font-bold">🟡 يحتاج متابعة</p>
+                        <h3 class="text-2xl font-black text-amber-700 mt-1" id="kpi-yellow">0</h3>
+                    </div>
+                    <div class="bg-amber-50 text-amber-600 p-3 rounded-xl"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-rose-600 font-bold">🔴 يحتاج تدخل عاجل</p>
+                        <h3 class="text-2xl font-black text-rose-700 mt-1" id="kpi-red">0</h3>
+                    </div>
+                    <div class="bg-rose-50 text-rose-600 p-3 rounded-xl"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4">توزيع الحالات حسب مؤشر الخطورة</h3>
+                    <div class="h-64 flex justify-center"><canvas id="riskPieChart"></canvas></div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4">توزيع الطلاب حسب المراحل والصفوف</h3>
+                    <div class="h-64 flex justify-center"><canvas id="gradesBarChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Priority Cases Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-slate-800">الحالات ذات الأولوية (تحتاج متابعة أو تدخل عاجل)</h3>
+                    <span class="text-xs text-slate-500" id="priority-count">0 حالات</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-100 text-slate-600 font-bold">
+                            <tr>
+                                <th class="p-3">الرقم</th>
+                                <th class="p-3">اسم الطالب/ة</th>
+                                <th class="p-3">الصف والفصل</th>
+                                <th class="p-3">مؤشر الخطر</th>
+                                <th class="p-3">التصنيف</th>
+                                <th class="p-3">إجراء مقترح</th>
+                            </tr>
+                        </thead>
+                        <tbody id="priority-tbody" class="divide-y divide-slate-100">
+                            <tr><td colspan="6" class="p-6 text-center text-slate-400">لا توجد بيانات مستوردة بعد. قم برفع ملف الإكسل أو تحميل البيانات التجريبية.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: IMPORT -->
+        <div id="tab-import" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h2 class="text-lg font-bold text-slate-800">استيراد بيانات الطلاب من ملف Excel</h2>
+                <p class="text-xs text-slate-500">قم برفع ملف Excel (XLSX / XLS) يحتوي على أوراق العمل الخاصة ببيانات الطلاب، الحضور، التحصيل، والسلوك.</p>
+                
+                <div class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:bg-slate-50 transition cursor-pointer relative">
+                    <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
+                    <div class="flex flex-col items-center justify-center space-y-2">
+                        <svg class="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <p class="text-sm font-bold text-slate-700">اضغط لاختيار ملف Excel أو سحب وإفلاته هنا</p>
+                        <p class="text-xs text-slate-400">يدعم صيغ XLSX, XLS (متوافق مع قالب 320 طالبة)</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="downloadSmartTemplate()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
+                        <span>📥 تحميل قالب إكسل جاهز (320 طالبة)</span>
+                    </button>
+                    <span id="import-status" class="text-xs font-bold text-slate-500">لم يتم اختيار ملف</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: STUDENTS -->
+        <div id="tab-students" class="tab-content space-y-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-wrap gap-4 items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-800">سجل الطلاب والطالبات الشامل</h2>
+                <div class="flex gap-2">
+                    <input type="text" id="search-input" placeholder="بحث بالاسم أو الرقم التعريفي..." oninput="filterStudentsTable()" class="px-3 py-1.5 border border-slate-200 rounded-lg text-xs w-64 focus:outline-none focus:border-primary-500">
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-100 text-slate-600 font-bold">
+                            <tr>
+                                <th class="p-3">الرقم</th>
+                                <th class="p-3">اسم الطالب/ة</th>
+                                <th class="p-3">المرحلة</th>
+                                <th class="p-3">الصف</th>
+                                <th class="p-3">الفصل</th>
+                                <th class="p-3">الغياب</th>
+                                <th class="p-3">التأخر</th>
+                                <th class="p-3">مؤشر الخطر</th>
+                                <th class="p-3">التصنيف</th>
+                                <th class="p-3">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-tbody" class="divide-y divide-slate-100">
+                            <tr><td colspan="10" class="p-6 text-center text-slate-400">لا توجد بيانات متاحة.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: GUIDANCE -->
+        <div id="tab-guidance" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h2 class="text-lg font-bold text
