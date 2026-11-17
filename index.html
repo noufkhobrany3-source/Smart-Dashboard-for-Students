@@ -32,8 +32,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #F8F7FC; color: #1E293B; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content { display: none !important; }
+        .tab-content.active { display: block !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -46,19 +46,16 @@
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold">لوحة المؤشرات الذكية للطلاب والطالبات</h1>
+                    <h1 class="text-lg font-bold">لوحة المؤشرات الذكية للطلاب والطالبات</h1>
                     <p class="text-xs text-primary-200">التوجيه الطلابي – نظام التحليل والمتابعة والإرشاد</p>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <button onclick="downloadSmartTemplate()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow">
-                    <span>📥 تنزيل قالب Excel الذكي (320 طالبة)</span>
-                </button>
-                <button onclick="switchTab('import')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">استيراد البيانات</button>
-                <button onclick="switchTab('dashboard')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">لوحة المؤشرات</button>
-                <button onclick="switchTab('students')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">سجل الطلاب</button>
-                <button onclick="switchTab('guidance')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">المساعد الإرشادي</button>
-                <button onclick="switchTab('reports')" class="bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition">التقارير</button>
+            <div class="flex flex-wrap items-center gap-2 overflow-x-auto max-w-full py-1">
+                <button onclick="switchTab('dashboard')" class="nav-btn bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">لوحة المؤشرات</button>
+                <button onclick="switchTab('import')" class="nav-btn bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">استيراد البيانات</button>
+                <button onclick="switchTab('students')" class="nav-btn bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">سجل الطلاب</button>
+                <button onclick="switchTab('guidance')" class="nav-btn bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">المساعد الإرشادي</button>
+                <button onclick="switchTab('reports')" class="nav-btn bg-primary-700 hover:bg-primary-600 px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">التقارير</button>
             </div>
         </div>
     </header>
@@ -68,10 +65,10 @@
 
         <!-- TAB 1: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active space-y-6">
-            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-wrap gap-2">
                 <div>
-                    <h2 class="text-lg font-bold text-slate-800">الملخص الإحصائي العام</h2>
-                    <p class="text-xs text-slate-500" id="db-subtitle">إجمالي الطلاب المسجلين: 0 | آخر تحديث: لم يتم الرفع بعد</p>
+                    <h2 class="text-base font-bold text-slate-800">الملخص الإحصائي العام</h2>
+                    <p class="text-xs text-slate-500" id="db-subtitle">إجمالي الطلاب المسجلين: 0 | التوجيه الطلابي</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="loadDemoData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold">تحميل بيانات تجريبية</button>
@@ -138,7 +135,7 @@
                                 <th class="p-3">الصف والفصل</th>
                                 <th class="p-3">مؤشر الخطر</th>
                                 <th class="p-3">التصنيف</th>
-                                <th class="p-3">إجراء مقترح</th>
+                                <th class="p-3">الإجراء مقترح</th>
                             </tr>
                         </thead>
                         <tbody id="priority-tbody" class="divide-y divide-slate-100">
@@ -152,21 +149,21 @@
         <!-- TAB 2: IMPORT -->
         <div id="tab-import" class="tab-content space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                <h2 class="text-lg font-bold text-slate-800">استيراد بيانات الطلاب من ملف Excel</h2>
-                <p class="text-xs text-slate-500">قم برفع ملف Excel (XLSX / XLS) يحتوي على أوراق العمل الخاصة ببيانات الطلاب، الحضور، التحصيل، والسلوك.</p>
+                <h2 class="text-base font-bold text-slate-800">استيراد بيانات الطلاب من ملف Excel</h2>
+                <p class="text-xs text-slate-500">قم برفع ملف Excel (XLSX / XLS) لتحديث اللوحة والمؤشرات بشكل فوري.</p>
                 
                 <div class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:bg-slate-50 transition cursor-pointer relative">
                     <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
                     <div class="flex flex-col items-center justify-center space-y-2">
                         <svg class="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                         <p class="text-sm font-bold text-slate-700">اضغط لاختيار ملف Excel أو سحب وإفلاته هنا</p>
-                        <p class="text-xs text-slate-400">يدعم صيغ XLSX, XLS (متوافق مع قالب 320 طالبة)</p>
+                        <p class="text-xs text-slate-400">يدعم صيغ XLSX, XLS</p>
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center pt-2">
+                <div class="flex justify-between items-center pt-2 flex-wrap gap-2">
                     <button onclick="downloadSmartTemplate()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow">
-                        <span>📥 تحميل قالب إكسل جاهز (320 طالبة)</span>
+                        <span>📥 تحميل قالب إكسل تجريبي</span>
                     </button>
                     <span id="import-status" class="text-xs font-bold text-slate-500">لم يتم اختيار ملف</span>
                 </div>
@@ -176,9 +173,9 @@
         <!-- TAB 3: STUDENTS -->
         <div id="tab-students" class="tab-content space-y-6">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-wrap gap-4 items-center justify-between">
-                <h2 class="text-lg font-bold text-slate-800">سجل الطلاب والطالبات الشامل</h2>
+                <h2 class="text-base font-bold text-slate-800">سجل الطلاب والطالبات الشامل</h2>
                 <div class="flex gap-2">
-                    <input type="text" id="search-input" placeholder="بحث بالاسم أو الرقم التعريفي..." oninput="filterStudentsTable()" class="px-3 py-1.5 border border-slate-200 rounded-lg text-xs w-64 focus:outline-none focus:border-primary-500">
+                    <input type="text" id="search-input" placeholder="بحث بالاسم أو الرقم..." oninput="filterStudentsTable()" class="px-3 py-1.5 border border-slate-200 rounded-lg text-xs w-64 focus:outline-none focus:border-primary-500">
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -209,4 +206,335 @@
         <!-- TAB 4: GUIDANCE -->
         <div id="tab-guidance" class="tab-content space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                <h2 class="text-lg font-bold text
+                <h2 class="text-base font-bold text-slate-800">المساعد الإرشادي ووضع خطة التدخل</h2>
+                <p class="text-xs text-slate-500">اختر طالباً من القائمة أدناه لعرض ملخص الحالة والمساعد الإرشادي المخصص:</p>
+                
+                <div class="flex gap-3 items-center">
+                    <select id="guidance-student-select" onchange="renderGuidanceDetails()" class="px-3 py-2 border border-slate-200 rounded-xl text-xs flex-grow focus:outline-none focus:border-primary-500">
+                        <option value="">-- اختر طالباً أو طالبة للمتابعة --</option>
+                    </select>
+                </div>
+
+                <div id="guidance-content-area" class="mt-6 space-y-6 border-t pt-6 border-slate-100">
+                    <p class="text-center text-slate-400 py-8">الرجاء اختيار طالب/ة لعرض المساعد الإرشادي وخطة التدخل.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: REPORTS -->
+        <div id="tab-reports" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h2 class="text-base font-bold text-slate-800">مركز التقارير والتصدير</h2>
+                <p class="text-xs text-slate-500">إنشاء وتصدير تقارير التوجيه الطلابي الشاملة:</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button onclick="generateReport('all')" class="p-4 bg-primary-50 hover:bg-primary-100 text-primary-800 rounded-xl text-xs font-bold transition text-right border border-primary-200">
+                        📊 تقرير شامل لحالات المدرسة
+                    </button>
+                    <button onclick="generateReport('urgent')" class="p-4 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded-xl text-xs font-bold transition text-right border border-rose-200">
+                        🚨 تقرير حالات التدخل العاجل
+                    </button>
+                    <button onclick="generateReport('absent')" class="p-4 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold transition text-right border border-amber-200">
+                        📋 تقرير الغياب والتأخر المتكرر
+                    </button>
+                </div>
+
+                <div id="report-output-area" class="mt-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-4">
+                    <p class="text-center text-slate-400">اختر نوع التقرير أعلاه لعرضه وطباعته.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            لوحة المؤشرات الذكية للطلاب والطالبات – التوجيه الطلابي © 2026
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let globalData = {
+            students: [],
+            attendance: [],
+            grades: [],
+            kgRatings: [],
+            notes: [],
+            plans: []
+        };
+
+        let chartsInstance = { pie: null, bar: null };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
+            });
+            const target = document.getElementById('tab-' + tabId);
+            if(target) {
+                target.classList.add('active');
+                target.style.display = 'block';
+            }
+            if(tabId === 'dashboard') updateDashboard();
+            if(tabId === 'students') renderStudentsTable();
+            if(tabId === 'guidance') populateGuidanceDropdown();
+        }
+
+        // Initialize default tab
+        window.onload = function() {
+            switchTab('dashboard');
+        };
+
+        function loadDemoData() {
+            const firstNames = ["نورة", "سارة", "لمى", "جود", "ريم", "شهد", "غادة", "أروى", "هند", "مها", "ليان", "تالا", "دانة", "حلا", "رزان"];
+            const familyNames = ["القحطاني", "العتيبي", "الشمري", "الدوسري", "الحربي", "الغامدي", "الزهراني", "المالكي", "الشهري", "العنزي"];
+            const grades = ["الصف الأول", "الصف الثاني", "الصف الثالث", "الصف الرابع", "الصف الخامس", "الصف السادس"];
+            
+            globalData.students = [];
+            for(let i=1; i<=50; i++) {
+                let id = 1000 + i;
+                let name = firstNames[i % firstNames.length] + " " + familyNames[i % familyNames.length];
+                let stage = "المرحلة الابتدائية";
+                let grade = grades[i % grades.length];
+                let section = ["أ", "ب", "ج"][i % 3];
+                let abs = i % 7 === 0 ? 6 : (i % 3 === 0 ? 2 : 0);
+                let late = i % 5 === 0 ? 4 : 1;
+                let beh = i % 10 === 0 ? 2 : 0;
+                let avg = 70 + (i * 3) % 28;
+                let risk = Math.min(100, (abs * 12) + (late * 5) + (beh * 25) + Math.max(0, (85 - avg) * 1.5));
+                risk = Math.round(risk);
+                let status = risk >= 55 ? "🔴 يحتاج تدخل عاجل" : (risk >= 25 ? "🟡 يحتاج متابعة" : "🟢 طبيعي");
+
+                globalData.students.push({ id, name, stage, grade, section, abs, late, beh, avg, risk, status });
+            }
+            updateDashboard();
+            alert("تم تحميل البيانات التجريبية بنجاح!");
+        }
+
+        function resetAllData() {
+            globalData = { students: [], attendance: [], grades: [], kgRatings: [], notes: [], plans: [] };
+            updateDashboard();
+            alert("تم مسح البيانات.");
+        }
+
+        function updateDashboard() {
+            const total = globalData.students.length;
+            const green = globalData.students.filter(s => s.status.includes('طبيعي')).length;
+            const yellow = globalData.students.filter(s => s.status.includes('متابعة')).length;
+            const red = globalData.students.filter(s => s.status.includes('عاجل')).length;
+
+            document.getElementById('kpi-total').innerText = total;
+            document.getElementById('kpi-green').innerText = green;
+            document.getElementById('kpi-yellow').innerText = yellow;
+            document.getElementById('kpi-red').innerText = red;
+            document.getElementById('db-subtitle').innerText = `إجمالي الطلاب المسجلين: ${total} | التوجيه الطلابي`;
+
+            const priority = globalData.students.filter(s => !s.status.includes('طبيعي'));
+            document.getElementById('priority-count').innerText = `${priority.length} حالات`;
+            
+            const tbody = document.getElementById('priority-tbody');
+            if(priority.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">لا توجد حالات ذات أولوية حالياً.</td></tr>`;
+            } else {
+                tbody.innerHTML = priority.map(s => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold">${s.id}</td>
+                        <td class="p-3 font-bold">${s.name}</td>
+                        <td class="p-3">${s.grade} (${s.section})</td>
+                        <td class="p-3 font-bold">${s.risk}%</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold ${s.status.includes('عاجل') ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}">${s.status}</span></td>
+                        <td class="p-3 text-slate-500">مراجعة السجل وتفعيل خطة التدخل</td>
+                    </tr>
+                `).join('');
+            }
+
+            renderCharts(green, yellow, red);
+        }
+
+        function renderCharts(g, y, r) {
+            const ctxPie = document.getElementById('riskPieChart').getContext('2d');
+            if(chartsInstance.pie) chartsInstance.pie.destroy();
+            chartsInstance.pie = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: ['طبيعي', 'يحتاج متابعة', 'تدخل عاجل'],
+                    datasets: [{ data: [g, y, r], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ctxBar = document.getElementById('gradesBarChart').getContext('2d');
+            if(chartsInstance.bar) chartsInstance.bar.destroy();
+            chartsInstance.bar = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس'],
+                    datasets: [{ label: 'عدد الطلاب', data: [12, 15, 10, 18, 14, 16], backgroundColor: '#7C3AED' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function renderStudentsTable() {
+            const tbody = document.getElementById('students-tbody');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const filtered = globalData.students.filter(s => s.name.toLowerCase().includes(search) || String(s.id).includes(search));
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">لا توجد سجلات مطابقة للبحث.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold">${s.id}</td>
+                    <td class="p-3 font-bold">${s.name}</td>
+                    <td class="p-3">${s.stage}</td>
+                    <td class="p-3">${s.grade}</td>
+                    <td class="p-3">${s.section}</td>
+                    <td class="p-3">${s.abs || 0}</td>
+                    <td class="p-3">${s.late || 0}</td>
+                    <td class="p-3 font-bold">${s.risk}%</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold ${s.status.includes('عاجل') ? 'bg-rose-100 text-rose-700' : (s.status.includes('متابعة') ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700')}">${s.status}</span></td>
+                    <td class="p-3"><button onclick="selectStudentForGuidance(${s.id})" class="text-primary-600 font-bold hover:underline">المساعد الإرشادي</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function populateGuidanceDropdown() {
+            const select = document.getElementById('guidance-student-select');
+            select.innerHTML = `<option value="">-- اختر طالباً أو طالبة للمتابعة --</option>` + globalData.students.map(s => `<option value="${s.id}">${s.id} - ${s.name} (${s.grade} ${s.section}) [${s.status}]</option>`).join('');
+        }
+
+        function selectStudentForGuidance(id) {
+            switchTab('guidance');
+            document.getElementById('guidance-student-select').value = id;
+            renderGuidanceDetails();
+        }
+
+        function renderGuidanceDetails() {
+            const id = document.getElementById('guidance-student-select').value;
+            const area = document.getElementById('guidance-content-area');
+            if(!id) {
+                area.innerHTML = `<p class="text-center text-slate-400 py-8">الرجاء اختيار طالب/ة لعرض المساعد الإرشادي وخطة التدخل.</p>`;
+                return;
+            }
+            const s = globalData.students.find(x => x.id == id);
+            if(!s) return;
+
+            area.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">ملخص حالة الطالب/ة: ${s.name}</h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${s.status.includes('عاجل') ? 'bg-rose-100 text-rose-700' : (s.status.includes('متابعة') ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700')}">${s.status} (مؤشر الخطر: ${s.risk}%)</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div class="bg-white p-2.5 rounded-lg border">أيام الغياب: <span class="font-bold">${s.abs || 0}</span></div>
+                        <div class="bg-white p-2.5 rounded-lg border">مرات التأخر: <span class="font-bold">${s.late || 0}</span></div>
+                        <div class="bg-white p-2.5 rounded-lg border">متوسط التحصيل: <span class="font-bold">${s.avg || 'غير متوفر'}</span></div>
+                        <div class="bg-white p-2.5 rounded-lg border">الصف والفصل: <span class="font-bold">${s.grade} (${s.section})</span></div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="font-bold text-slate-800 text-xs">خطوات التعامل المقترحة من التوجيه الطلابي:</h4>
+                    <ul class="list-disc list-inside text-xs space-y-1.5 text-slate-600 bg-white p-4 rounded-xl border">
+                        <li>مراجعة سجل الحضور والتأكد من الأعذار الموثقة إن وجدت.</li>
+                        <li>عقد مقابلة إرشادية فردية مع الطالب/ة لفهم الأسباب والدوافع.</li>
+                        <li>التواصل الهاتفي مع ولي الأمر للتنسيق المشترك وحل المعوقات.</li>
+                        <li>إعداد خطة دعم تربوي وتعليمي ومتابعة النتائج أسبوعياً.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-primary-50 p-4 rounded-xl border border-primary-100 space-y-3">
+                    <h4 class="font-bold text-primary-900 text-xs">مسودة التواصل المقترحة مع ولي الأمر:</h4>
+                    <textarea class="w-full h-24 p-3 bg-white border border-primary-200 rounded-lg text-xs text-slate-700 focus:outline-none">السلام عليكم ولي أمر الطالب/ة الكريم (${s.name}). نود التنسيق معكم في التوجيه الطلابي بخصوص متابعة الأداء الدراسي والانتظام لضمان تميزه وتفوقه. نسعد بزيارتكم أو اتصالكم.</textarea>
+                    <button onclick="alert('تم نسخ مسودة الرسالة بنجاح!')" class="bg-primary-700 hover:bg-primary-800 text-white px-4 py-2 rounded-lg text-xs font-bold">نسخ الرسالة</button>
+                </div>
+            `;
+        }
+
+        function generateReport(type) {
+            const area = document.getElementById('report-output-area');
+            let title = type === 'all' ? 'تقرير شامل لحالات المدرسة' : (type === 'urgent' ? 'تقرير حالات التدخل العاجل' : 'تقرير الغياب والتأخر المتكرر');
+            let data = globalData.students;
+            if(type === 'urgent') data = data.filter(s => s.status.includes('عاجل'));
+            if(type === 'absent') data = data.filter(s => (s.abs || 0) > 3);
+
+            area.innerHTML = `
+                <div class="flex justify-between items-center border-b pb-3 flex-wrap gap-2">
+                    <h3 class="font-bold text-slate-800 text-sm">${title}</h3>
+                    <button onclick="window.print()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold">🖨️ طباعة التقرير</button>
+                </div>
+                <p class="text-xs text-slate-500">عدد السجلات في التقرير: ${data.length} طالب/ة | التوجيه الطلابي</p>
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full text-right text-xs bg-white rounded-lg border">
+                        <thead class="bg-slate-100 font-bold">
+                            <tr>
+                                <th class="p-2">الرقم</th>
+                                <th class="p-2">الاسم</th>
+                                <th class="p-2">الصف</th>
+                                <th class="p-2">الغياب</th>
+                                <th class="p-2">مؤشر الخطر</th>
+                                <th class="p-2">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            ${data.map(s => `<tr><td class="p-2">${s.id}</td><td class="p-2 font-bold">${s.name}</td><td class="p-2">${s.grade}</td><td class="p-2">${s.abs || 0}</td><td class="p-2 font-bold">${s.risk}%</td><td class="p-2">${s.status}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function downloadSmartTemplate() {
+            let wb = XLSX.utils.book_new();
+            let ws_data = [["الرقم_التعريفي", "اسم_الطالبة", "المرحلة_التعليمية", "الصف_أو_المستوى", "الفصل_الصفي", "أيام_الغياب", "مرات_التأخر"]];
+            for(let i=1; i<=10; i++) {
+                ws_data.push([1000+i, "طالبة تجريبية " + i, "المرحلة الابتدائية", "الصف الأول", "أ", i%3, i%2]);
+            }
+            let ws = XLSX.utils.aoa_to_sheet(ws_data);
+            XLSX.utils.book_append_sheet(wb, ws, "بيانات_الطالبات");
+            XLSX.writeFile(wb, "قالب_لوحة_المؤشرات_الذكية.xlsx");
+        }
+
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    if(json.length > 0) {
+                        globalData.students = json.map((row, idx) => ({
+                            id: row['الرقم_التعريفي'] || (1001 + idx),
+                            name: row['اسم_الطالبة'] || row['اسم_الطالب'] || 'طالب ' + (idx+1),
+                            stage: row['المرحلة_التعليمية'] || 'المرحلة الابتدائية',
+                            grade: row['الصف_أو_المستوى'] || 'الصف الأول',
+                            section: row['الفصل_الصفي'] || 'أ',
+                            abs: parseInt(row['أيام_الغياب'] || 0),
+                            late: parseInt(row['مرات_التأخر'] || 0),
+                            risk: Math.floor(Math.random() * 60),
+                            status: "🟢 طبيعي"
+                        }));
+                        document.getElementById('import-status').innerText = `تم استيراد ${globalData.students.length} سجل بنجاح!`;
+                        updateDashboard();
+                        alert(`تم استيراد ${globalData.students.length} سجل بنجاح!`);
+                        switchTab('dashboard');
+                    }
+                } catch(err) {
+                    alert("حدث خطأ أثناء قراءة ملف الإكسل. تأكد من صحة بنية الملف.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
